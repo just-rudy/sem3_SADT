@@ -1,5 +1,7 @@
-#include <stdio.h>
 #include "array.h"
+
+#define TRUE 1
+#define FALSE 0
 
 int push_array(char **cur, char *end, char c)
 {
@@ -33,4 +35,25 @@ int print_array(char *beg, char *cur)
 
     printf("\n");
     return OK;
+}
+
+int check_array(char *beg, char *cur, int cnt)
+{
+    int res = TRUE;
+    int i = 0;
+
+    char *tmp = malloc(cnt / 2 * sizeof(char));
+
+    for (; beg <= cur && i < cnt / 2; beg++)
+        tmp[i++] = (*beg);
+
+    if (cnt % 2 != 0)
+        beg++;
+
+    for (; beg <= cur && res; beg++)
+        if (tmp[--i] != (*beg))
+            res = FALSE;
+
+    free(tmp);
+    return res;
 }
