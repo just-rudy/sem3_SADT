@@ -25,11 +25,11 @@ int pop_array(char **cur, char *beg, char *value)
 int print_array(char *beg, char *cur)
 {
     if (beg > cur)
-        return EMPTY;
-
-    if (beg == cur)
+    {
         printf("empty\n");
-
+        return EMPTY;
+    }
+    
     for (; beg <= cur; beg++)
         printf("%c", (*beg));
 

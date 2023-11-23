@@ -12,7 +12,7 @@
 #define POP_STACK 6
 #define PRINT_STACK 7
 #define PRINT_TUTORIAL 8
-// #define INPUT 9
+#define INPUT 9
 #define TIME 10
 
 #define OK 0
@@ -49,12 +49,14 @@ void main(void)
         {
         case EXIT:
             break;
+
         case PUSH_ARR:
             printf("Input letter: ");
             c = getchar();
             push_array(&arr_c, arr_s + N - 1, c);
             cnt_a++;
             break;
+
         case POP_ARR:
             rc = pop_array(&arr_c, arr_s, &c);
             cnt_a--;
@@ -62,15 +64,18 @@ void main(void)
             if (!rc)
                 printf("ARR: popped value: %c\n", c);
             break;
+
         case PRINT_ARR:
             print_array(arr_s, arr_c);
             break;
+
         case PUSH_STACK:
             printf("Input letter: ");
             c = getchar();
             last = push_stack(last, c);
             cnt_s++;
             break;
+
         case POP_STACK:
             if (!last)
                 printf("list stack is empty\n");
@@ -78,16 +83,18 @@ void main(void)
             {
                 char popped;
                 last = pop_stack(last, &popped, free_spaces, &free_spaces_cnt);
-                printf("popped el: %c", popped);
+                printf("popped el: %c\n", popped);
                 if (!last)
                     printf("list stack is now empty\n");
             }
             cnt_s--;
             cnt_s = (cnt_s < 0) ? 0 : cnt_s;
             break;
+
         case PRINT_STACK:
             print_stack(last, free_spaces, free_spaces_cnt);
             break;
+
         case CHECK_ALL:
             int res_a = check_array(arr_s, arr_c, cnt_a);
             int res_s = check_stack(last, cnt_s);
@@ -106,21 +113,35 @@ void main(void)
                 printf("list stack isn't a palindrome\n");
 
             break;
+
         case PRINT_TUTORIAL:
             print_menu();
             break;
-        // case INPUT:
-        //     int size = read_int("input number of chars: ", 0, 0);
-        //     char str[N + 1];
-        //     fgets(&str, size + 1, stdin);
-        //     str[size] = '\0';
 
-        //     last = str_to_stack(str, size);
+        case INPUT:
+            printf("input string: ");
+            cnt_a = 0;
+            cnt_s = 0;
+            char c;
+            
+            arr_c = arr_s - 1;
+            free_spaces_cnt = 0;
+            free_list(last);
 
-        //     break;
+            while ((c = getchar()) != '\n' && c != ' ' && c != '\t' && cnt_a < N)
+            {
+                last = push_stack(last, c);
+                push_array(&arr_c, arr_s + N - 1, c);
+                cnt_a++;
+                cnt_s++;
+
+            }
+            break;
+
         case TIME:
             time_measure();
             break;
+
         default:
             printf("Input error");
             break;
@@ -149,6 +170,7 @@ void print_menu(void)
     printf("\t6 to POP\n");
     printf("\t7 to PRINT\n");
     printf("8 to print tutorial again\n");
+    printf("9 to INPUT string\n");
     printf("10 for TIME-MEM measure experiment\n");
 }
 

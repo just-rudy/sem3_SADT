@@ -42,14 +42,25 @@ struct node_s *pop_stack(struct node_s *last, char *c, struct node_s **free_spac
 void print_stack(struct node_s *last, struct node_s **free_spaces, int cnt)
 {
     if (!last)
+    {
         printf("empty\n");
 
-    printf("stack:\n");
+        printf("\nfree spaces:\n");
+        if (cnt == 0)
+            printf("no freed spaces yet\n");
+        for (int i = 0; i < cnt; i++)
+            printf("%p\n", free_spaces[i]);
+        printf("\n");
+
+        return;
+    }
+
     for (; last != NULL;)
     {
-        printf("{%p} %c\n", last, last->value);
+        printf("\n{%p} %c", last, last->value);
         last = last->prev;
     }
+    printf(" - head\n");
 
     printf("\nfree spaces:\n");
     if (cnt == 0)
@@ -83,4 +94,15 @@ int check_stack(struct node_s *last, int cnt)
     }
     free(tmp);
     return res;
+}
+
+void free_list(struct node_s *node)
+{
+    struct node_s *tmp = node;
+    while (tmp)
+    {
+        struct node_s *cur = tmp;
+        tmp = tmp->prev;
+        free(cur);
+    }
 }

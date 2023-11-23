@@ -18,6 +18,7 @@ struct node_s *push_stack(struct node_s *last, char c);
 struct node_s *pop_stack(struct node_s *last, char *c, struct node_s **free_spaces, int *cnt);
 void print_stack(struct node_s *last, struct node_s **free_spaces, int cnt);
 int check_stack(struct node_s *last, int cnt);
+void free_list(struct node_s *node);
 // struct node_s *str_to_stack(char str[N], int cnt);
 
 #endif
