@@ -1,22 +1,22 @@
-#include "../inc/consts.h"
-#include "../inc/input.h"
-#include "../inc/commands.h"
-#include "../inc/key_and_sort.h"
+#include "consts.h"
+#include "input.h"
+#include "commands.h"
+#include "key_and_sort.h"
 
 int error_handler(int status);
-int proccess(abonent_book book, int n);
+int proccess(abonent_t_book book, int n);
 
 int main()
 {
     int status = SUCCESS;
-    int n = ABONENT_CNT;
-    abonent_book book;
+    int n = abonent_t_CNT;
+    abonent_t_book book;
     status = make_table(book, n);
     status = proccess(book, n);
     return error_handler(status);
 }
 
-int proccess(abonent_book book, int n)
+int proccess(abonent_t_book book, int n)
 {
     int status = SUCCESS;
     int code = START;

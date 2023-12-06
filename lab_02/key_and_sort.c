@@ -1,9 +1,9 @@
-#include "../inc/key_and_sort.h"
+#include "key_and_sort.h"
 
 // ключ - фамилия
 
 // создает таблицу ключей
-void use_key(abonent_book book, key_table_arr key_tbl, int n)
+void use_key(abonent_t_book book, key_table_arr key_tbl, int n)
 {
     for (int i = 0; i < n; i++)
     {

@@ -24,9 +24,9 @@
 #define PRINT_KEY     500
 
 // consts
-#define MAX_STR_LEN      20
-#define ABONENT_CNT      40
-#define MAX_ABONENT_CNT 100
+#define MAX_STR_LEN      14
+#define abonent_t_CNT      40
+#define MAX_abonent_t_CNT 100
 
 struct addres_s
 {
@@ -50,7 +50,7 @@ union status_u
     } working;
 };
 
-struct abonent
+struct abonent_t
 {
     char surname[MAX_STR_LEN];
     char name[MAX_STR_LEN];
@@ -66,6 +66,6 @@ struct key_s
 };
 
 typedef char string[MAX_STR_LEN+1];
-typedef struct abonent abonent_book[1000];
+typedef struct abonent_t abonent_t_book[1000];
 typedef struct key_s key_table_arr[1000];
 #endif

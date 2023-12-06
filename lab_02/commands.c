@@ -1,4 +1,4 @@
-#include "../inc/commands.h"
+#include "commands.h"
 
 int read_string(string str)
 {
@@ -22,57 +22,50 @@ void print_tutorial()
     printf("Command:\n");
     printf("1 to exit\n");
     printf("2 to read tutorial again\n");
-    printf("3 for adding new abonent\n");
-    printf("4 for deleting abonent\n");
+    printf("3 for adding new abonent_t\n");
+    printf("4 for deleting abonent_t\n");
     printf("5 for creating key table\n");
     printf("6 for sorting key by bubble\n");
-//    printf("7 for sorting key by choice\n");
+    //    printf("7 for sorting key by choice\n");
     printf("100 to print abonenet book\n");
     printf("500 to print key_table\n");
 }
 
-void print_one_abonent(struct abonent person)
+void print_one_abonent_t(struct abonent_t person)
 {
-    printf("name:    %s\n", person.name);
-    printf("surname: %s\n", person.surname);
-    printf("address:\n  {\n");
-    printf("   street: %s\n", person.addres.street);
-    printf("   house:  %s\n", person.addres.house);
-    printf("  }\n");
+    printf("|%16s|%18s|%16s|%8s|%3d|", person.name, person.surname, person.addres.street, person.addres.house, person.status_t);
     if (person.status_t == PERSONAL)
-        printf("BDay: %d.%d.%d\n", person.stat.personal.day, person.stat.personal.month, person.stat.personal.year);
+        printf("     bday: %12d.%2d.%4d|\n", person.stat.personal.day, person.stat.personal.month, person.stat.personal.year);
     else
-    {
-        printf("Work status:\n  {\n");
-        printf("   organisation: %s\n", person.stat.working.organisation);
-        printf("   role:         %s\n", person.stat.working.position);
-        printf("  }\n");
-    }
-    printf("}\n");
-    printf("\n");
+        printf("%14s - %14s|\n", person.stat.working.organisation, person.stat.working.position);
 }
 
-void print_book(abonent_book book, int n)
+void print_book(abonent_t_book book, int n)
 {
+    printf("|      name      |     surname      |          adress         |p-0|             status            |\n");
+    printf("|                |                  |     street     |  home  |w-1|                               |\n");
+    printf("|----------------|------------------|----------------|--------|---|-------------------------------|\n");
+
     for (int i = 0; i < n; i++)
     {
-        printf("(%d):\n{\n", i);
-        print_one_abonent(book[i]);
+        print_one_abonent_t(book[i]);
+        if ((i + 1) % 5 == 0)
+            printf("|----------------|------------------|----------------|--------|---|-------------------------------|\n");
     }
 }
 
-void add_line(abonent_book book, int n)
+void add_line(abonent_t_book book, int n)
 {
     int status = SUCCESS;
     string tmp_str;
     char c;
-    
+
     // name
     printf("input name: ");
     status = read_string(tmp_str);
     if (status == LONG_STR)
     {
-        printf("your input string was longer than 25 simbols, it was cut");
+        printf("your input string was longer than %d simbols, it was cut", MAX_STR_LEN);
         status = SUCCESS;
     }
     strcpy(book[n].name, tmp_str);
@@ -82,7 +75,7 @@ void add_line(abonent_book book, int n)
     status = read_string(tmp_str);
     if (status == LONG_STR)
     {
-        printf("your input string was longer than 25 simbols, it was cut");
+        printf("your input string was longer than %d simbols, it was cut", MAX_STR_LEN);
         status = SUCCESS;
     }
     strcpy(book[n].surname, tmp_str);
@@ -93,7 +86,7 @@ void add_line(abonent_book book, int n)
     status = read_string(tmp_str);
     if (status == LONG_STR)
     {
-        printf("your input string was longer than 25 simbols, it was cut");
+        printf("your input string was longer than %d simbols, it was cut", MAX_STR_LEN);
         status = SUCCESS;
     }
     strcpy(book[n].addres.street, tmp_str);
@@ -103,19 +96,19 @@ void add_line(abonent_book book, int n)
     status = read_string(tmp_str);
     if (status == LONG_STR)
     {
-        printf("your input string was longer than 25 simbols, it was cut");
+        printf("your input string was longer than %d simbols, it was cut", MAX_STR_LEN);
         status = SUCCESS;
     }
     strcpy(book[n].addres.house, tmp_str);
 
     // status
     printf("for personal input 0 else input 1: ");
-    int tmp_int = 0; 
-    while (scanf("%d%c", &tmp_int, &c) != 2  && c == '\n' || (tmp_int != 0 && tmp_int != 1))
+    int tmp_int = 0;
+    while (scanf("%d%c", &tmp_int, &c) != 2 && c == '\n' || (tmp_int != 0 && tmp_int != 1))
         printf("try again: ");
     // printf("name: %d\n", tmp_int);
 
-    if (tmp_int == 1)
+    if (tmp_int == 0)
     {
         book[n].status_t = PERSONAL;
         printf("personal input\n");
@@ -137,7 +130,7 @@ void add_line(abonent_book book, int n)
         status = read_string(tmp_str);
         if (status == LONG_STR)
         {
-            printf("your input string was longer than 25 simbols, it was cut");
+            printf("your input string was longer than %d simbols, it was cut", MAX_STR_LEN);
             status = SUCCESS;
         }
         strcmp(book[n].stat.working.organisation, tmp_str);
@@ -147,17 +140,17 @@ void add_line(abonent_book book, int n)
 
         if (status == LONG_STR)
         {
-            printf("your input string was longer than 25 simbols, it was cut");
+            printf("your input string was longer than %d simbols, it was cut", MAX_STR_LEN);
             status = SUCCESS;
         }
         strcmp(book[n].stat.working.position, tmp_str);
     }
 
     printf("\nyour input: \n");
-    print_one_abonent(book[n]);
+    print_one_abonent_t(book[n]);
 }
 
-int delete_line(abonent_book book, int n)
+int delete_line(abonent_t_book book, int n)
 {
     int status = SUCCESS;
     printf("input line index: ");

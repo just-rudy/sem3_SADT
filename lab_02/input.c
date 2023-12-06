@@ -1,13 +1,13 @@
-#include "../inc/input.h"
-#include "../inc/commands.h"
+#include "input.h"
+#include "commands.h"
 
-int make_table(abonent_book book, int n)
+int make_table(abonent_t_book book, int n)
 {
     char *names[20] = {"Rudy", "Ross", "Lily", "Robin", "Marshall", "Barney", "Ted", "Loki", "Austin", "Ally", "Dez", "Monica", "John", "Jack", "James", "Dean", "Sam", "Jensen", "Peter", "Teo"};
     char *surns[20] = {"Moon", "Geller", "Mosby", "Stinson", "Bing", "Cooper", "Parker", "Verona", "Sherbatsky", "Erickson", "Stark", "Stratford", "Aldrin", "Tribbiany", "Winchester", "Morningstar", "Decker", "Lynch", "Garfield", "Goldfinch"};
     int date[20][3] = {{27, 12, 1955}, {26, 7, 1950}, {3, 4, 1999}, {17, 8, 1973}, {6, 11, 2003}, {3, 2, 2014}, {20, 11, 1950}, {12, 6, 2001}, {9, 1, 1996}, {2, 11, 1981}, {28, 4, 1990}, {27, 9, 1992}, {27, 11, 2010}, {24, 11, 1990}, {15, 12, 2018}, {6, 8, 2001}, {11, 7, 1993}, {26, 10, 1950}, {25, 10, 1977}, {27, 7, 2014}};
-    char *organisations[11] = {"vk", "mail", "bmstu", "stud", "metro", "sonic boom", "black books", "central perk", "maclaren s pub", "Lux", "Moon Band"};
-    char *positions[10] = {"lead", "vice president", "president", "host", "owner", "worker", "back vocal", "dancer", "car driver", "assistant"};
+    char *organisations[11] = {"vk", "mail", "bmstu", "stud", "metro", "sonic boom", "black books", "central perk", "maclarens pub", "Lux", "Moon Band"};
+    char *positions[10] = {"lead", "vice pres", "president", "host", "owner", "worker", "back vocal", "dancer", "car driver", "assistant"};
     char *streets[7] = {"Kansas", "Butovo", "Miamy", "Somethere else", "Hell", "Purgatory", "LUX"};
     char *houses[7] = {"1", "2", "3B", "7", "10", "no house", "5/3"};
     int status = SUCCESS;
