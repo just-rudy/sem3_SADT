@@ -31,9 +31,9 @@ void print_tutorial()
     printf("500 to print key_table\n");
 }
 
-void print_one_abonent_t(struct abonent_t person)
+void print_one_abonent_t(struct abonent_t person, int i)
 {
-    printf("|%16s|%18s|%16s|%8s|%3d|", person.name, person.surname, person.addres.street, person.addres.house, person.status_t);
+    printf("|%3d|%16s|%18s|%16s|%8s|%3d|", i, person.name, person.surname, person.addres.street, person.addres.house, person.status_t);
     if (person.status_t == PERSONAL)
         printf("     bday: %12d.%2d.%4d|\n", person.stat.personal.day, person.stat.personal.month, person.stat.personal.year);
     else
@@ -42,15 +42,15 @@ void print_one_abonent_t(struct abonent_t person)
 
 void print_book(abonent_t_book book, int n)
 {
-    printf("|      name      |     surname      |          adress         |p-0|             status            |\n");
-    printf("|                |                  |     street     |  home  |w-1|                               |\n");
-    printf("|----------------|------------------|----------------|--------|---|-------------------------------|\n");
+    printf("| N |      name      |     surname      |          adress         |p-0|             status            |\n");
+    printf("|   |                |                  |     street     |  home  |w-1|                               |\n");
+    printf("|---|----------------|------------------|----------------|--------|---|-------------------------------|\n");
 
     for (int i = 0; i < n; i++)
     {
-        print_one_abonent_t(book[i]);
+        print_one_abonent_t(book[i], i);
         if ((i + 1) % 5 == 0)
-            printf("|----------------|------------------|----------------|--------|---|-------------------------------|\n");
+            printf("|---|----------------|------------------|----------------|--------|---|-------------------------------|\n");
     }
 }
 
@@ -133,7 +133,7 @@ void add_line(abonent_t_book book, int n)
             printf("your input string was longer than %d simbols, it was cut", MAX_STR_LEN);
             status = SUCCESS;
         }
-        strcmp(book[n].stat.working.organisation, tmp_str);
+        strcpy(book[n].stat.working.organisation, tmp_str);
 
         printf("input your position: ");
         status = read_string(tmp_str);
@@ -143,11 +143,11 @@ void add_line(abonent_t_book book, int n)
             printf("your input string was longer than %d simbols, it was cut", MAX_STR_LEN);
             status = SUCCESS;
         }
-        strcmp(book[n].stat.working.position, tmp_str);
+        strcpy(book[n].stat.working.position, tmp_str);
     }
 
     printf("\nyour input: \n");
-    print_one_abonent_t(book[n]);
+    print_one_abonent_t(book[n], n);
 }
 
 int delete_line(abonent_t_book book, int n)
@@ -157,5 +157,6 @@ int delete_line(abonent_t_book book, int n)
     int idx = 0;
     while (scanf("%d\n", &idx) != 1 || idx > (n) || idx < 0)
         printf("try again. input line index less than %d, grater than 0: ", (n));
+    printf("ok");
     return status;
 }
