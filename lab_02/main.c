@@ -45,7 +45,7 @@ int proccess(abonent_t_book book, key_table_arr key_tbl, int n)
                 n++;
                 break;
             case DELETE:
-                delete_line(book, &n);
+                delete_line(book, key_tbl, &n);
                 break;
             case SORT_KEY_BBL:
                 bubble_sort_k(key_tbl, n);

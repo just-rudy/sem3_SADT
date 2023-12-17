@@ -15,6 +15,7 @@ int make_table(abonent_t_book book, int n)
     for (int i = 0; i < n; i++)
     {
         // name
+        book[i].idx = i;
         strcpy(book[i].name, names[i % 20]);
         // surname
         strcpy(book[i].surname, surns[i % 20]);

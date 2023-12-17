@@ -2,6 +2,8 @@
 
 int read_int(char *msg, int mn, int mx);
 void shift(abonent_t_book book, int idx, int n);
+void shift_key(key_table_arr tbl, int idx, int n);
+void print_one_abonent_t(struct abonent_t person);
 
 int read_string(string str)
 {
@@ -25,22 +27,22 @@ void print_tutorial()
     printf("2 to read tutorial again\n");
     printf("3 for adding new abonent_t\n");
     printf("4 for deleting abonent_t\n");
+    printf("5 for sorting key by choice\n");
     printf("6 for sorting key by bubble\n");
-    //    printf("7 for sorting key by choice\n");
     printf("100 to print abonenet book\n");
     printf("500 to print key_table\n");
 }
 
-void print_one_abonent_t(struct abonent_t person, int i)
+void print_one_abonent_t(struct abonent_t person)
 {
-    printf("|%3d|%16s|%18s|%16s|%8s|%3d|", i, person.name, person.surname, person.addres.street, person.addres.house, person.status_t);
+    printf("|%3d|%16s|%18s|%16s|%8s|%3d|", person.idx, person.name, person.surname, person.addres.street, person.addres.house, person.status_t);
     if (person.status_t == PERSONAL)
         printf("     bday: %12d.%2d.%4d|\n", person.stat.personal.day, person.stat.personal.month, person.stat.personal.year);
     else
         printf("%14s - %14s|\n", person.stat.working.organisation, person.stat.working.position);
 }
 
-void print_book(abonent_t_book book, int n)
+void print_book(abonent_t_book book, int n) 
 {
     printf("| N |      name      |     surname      |          adress         |p-0|             status            |\n");
     printf("|   |                |                  |     street     |  home  |w-1|                               |\n");
@@ -48,7 +50,7 @@ void print_book(abonent_t_book book, int n)
 
     for (int i = 0; i < n; i++)
     {
-        print_one_abonent_t(book[i], i);
+        print_one_abonent_t(book[i]);
         if ((i + 1) % 5 == 0)
             printf("|---|----------------|------------------|----------------|--------|---|-------------------------------|\n");
     }
@@ -147,12 +149,12 @@ void add_line(abonent_t_book book, key_table_arr key_tbl, int n)
     }
 
     printf("\nyour input: \n");
-    print_one_abonent_t(book[n], n);
+    print_one_abonent_t(book[n]);
     key_tbl[n].idx = n;
     strcpy(key_tbl[n].name, book[n].name);
 }
 
-void delete_line(abonent_t_book book, int *n)
+void delete_line(abonent_t_book book, key_table_arr tbl, int *n)
 {
     int status = SUCCESS;
 
@@ -162,8 +164,19 @@ void delete_line(abonent_t_book book, int *n)
     {
         int idx = read_int("input line index: ", 0, (*n) - 1);
         if (idx != (*n))
+        {
             shift(book, idx, (*n));
+            shift_key(tbl, idx, (*n));
+        }
         (*n)--;
+    }
+}
+
+void shift_key(key_table_arr tbl, int idx, int n)
+{
+    for (int i = idx; i < n - 1; i++)
+    {
+        strcpy(tbl[i].name, tbl[i + 1].name);
     }
 }
 

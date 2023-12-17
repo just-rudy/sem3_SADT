@@ -1,6 +1,7 @@
 #include "key_and_sort.h"
-
-// ключ - фамилия
+void use_key(abonent_t_book book, key_table_arr key_tbl, int n);
+void swap_key(struct key_s *a, struct key_s *b);
+void swap(struct key_s *xp, struct key_s *yp);
 
 // создает таблицу ключей
 void use_key(abonent_t_book book, key_table_arr key_tbl, int n)
@@ -9,8 +10,6 @@ void use_key(abonent_t_book book, key_table_arr key_tbl, int n)
     {
         key_tbl[i].idx = i;
         strcpy(key_tbl[i].name, book[i].name);
-        // printf("key: %d - %s\n", key_tbl[i].idx, key_tbl[i].name);
-        // printf("key: %d - %s\n", i, book[i].name);
     }
 }
 
@@ -19,19 +18,31 @@ void use_key(abonent_t_book book, key_table_arr key_tbl, int n)
 void print_key_table(key_table_arr tbl, int n)
 {
     for (int i = 0; i < n; i++)
-    {
         printf("{%d} - %s\n", tbl[i].idx, tbl[i].name);
-    }
 }
 
 // сортирует таблицу ключей по имени
 // пузырек
 
-void swap(struct key_s *a, struct key_s *b)
+void swap_key(struct key_s *a, struct key_s *b)
 {
-    struct key_s *tmp = a;
-    a = b;
-    b = tmp;
+    struct key_s tmp;
+    tmp.idx = a->idx;
+    strcpy(tmp.name, a->name);
+
+    a->idx = b->idx;
+    strcpy(a->name, b->name);
+
+    b->idx = tmp.idx;
+    strcpy(b->name, tmp.name);
+}
+
+// выбор
+void swap(struct key_s *xp, struct key_s *yp)
+{
+    struct key_s temp = *xp;
+    *xp = *yp;
+    *yp = temp;
 }
 
 void bubble_sort_k(key_table_arr key_table, int n)
@@ -40,44 +51,24 @@ void bubble_sort_k(key_table_arr key_table, int n)
     {
         for (int j = i; j < n; j++)
         {
-            if (strcmp(key_table[i].name, key_table[j].name) < 0)
+            if (strcmp(key_table[i].name, key_table[j].name) > 0)
                 swap(&key_table[i], &key_table[j]);
         }
     }
 }
 
-
-//выбор
-
 void choice_sort_k(key_table_arr key_table, int n)
 {
-    int i = 0;
-    while (i < n)
-    {
-        struct key_s mx;
-        mx.idx = key_table[0].idx;
-        strcpy(mx.name, key_table[0].name);
+    int i, j, min_idx;
 
-        for (int j = 0; j < n-i; j++)
-            if (strcmp(mx.name, key_table[i].name) > 0)
-                swap(&mx, &key_table[i]);
-        i++;
+    for (i = 0; i < n - 1; i++)
+    {
+        min_idx = i;
+        for (j = i + 1; j < n; j++)
+        {
+            if (strcmp(key_table[j].name, key_table[min_idx].name) < 0)
+                min_idx = j;
+        }
+        swap(&key_table[min_idx], &key_table[i]);
     }
 }
-
-
-//void choice_sort_k(struct key_s *key_table, int n)
-//{
-//    struct key_s *arr_b = key_table;
-//    struct key_s *arr_end = arr_b + n * sizeof(struct key_s);
-//
-//    for (size_t i = 0; i < n; i++)
-//    {
-//        struct key_s *mx = arr_b;
-//        for (struct key_s *cur = arr_b; cur != arr_end; cur++)
-//            if (strcmp(cur->name, mx->name) < 0)
-//                swap(&cur, &mx);
-//        arr_end--;
-//        swap(&mx, &arr_end);
-//    }
-//}
