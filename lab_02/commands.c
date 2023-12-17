@@ -1,11 +1,12 @@
 #include "commands.h"
 
+int read_int(char *msg, int mn, int mx);
+void shift(abonent_t_book book, int idx, int n);
+
 int read_string(string str)
 {
     int status = SUCCESS;
     int ch = 0, i = 0;
-    // ch=getchar();
-    // printf("char is %c %d\n", ch, ch);
     while ((ch = getchar()) != '\n' && ch != EOF)
     {
         if (i < MAX_STR_LEN - 1)
@@ -24,7 +25,6 @@ void print_tutorial()
     printf("2 to read tutorial again\n");
     printf("3 for adding new abonent_t\n");
     printf("4 for deleting abonent_t\n");
-    printf("5 for creating key table\n");
     printf("6 for sorting key by bubble\n");
     //    printf("7 for sorting key by choice\n");
     printf("100 to print abonenet book\n");
@@ -54,7 +54,7 @@ void print_book(abonent_t_book book, int n)
     }
 }
 
-void add_line(abonent_t_book book, int n)
+void add_line(abonent_t_book book, key_table_arr key_tbl, int n)
 {
     int status = SUCCESS;
     string tmp_str;
@@ -148,15 +148,85 @@ void add_line(abonent_t_book book, int n)
 
     printf("\nyour input: \n");
     print_one_abonent_t(book[n], n);
+    key_tbl[n].idx = n;
+    strcpy(key_tbl[n].name, book[n].name);
 }
 
-int delete_line(abonent_t_book book, int n)
+void delete_line(abonent_t_book book, int *n)
 {
     int status = SUCCESS;
-    printf("input line index: ");
-    int idx = 0;
-    while (scanf("%d\n", &idx) != 1 || idx > (n) || idx < 0)
-        printf("try again. input line index less than %d, grater than 0: ", (n));
-    printf("ok");
-    return status;
+
+    if ((*n) == 0)
+        printf("EMPTY\n");
+    else
+    {
+        int idx = read_int("input line index: ", 0, (*n) - 1);
+        if (idx != (*n))
+            shift(book, idx, (*n));
+        (*n)--;
+    }
+}
+
+void shift(abonent_t_book book, int idx, int n)
+{
+    // book[idx] = book[idx + 1]
+
+    for (int i = idx; i < n - 1; i++)
+    {
+        strcpy(book[i].name, book[i + 1].name);
+        strcpy(book[i].surname, book[i + 1].surname);
+        strcpy(book[i].addres.house, book[i + 1].addres.house);
+        strcpy(book[i].addres.street, book[i + 1].addres.street);
+        book[i].status_t = book[i + 1].status_t;
+        if (book[i].status_t == PERSONAL)
+        {
+            book[i].stat.personal.day = book[i + 1].stat.personal.day;
+            book[i].stat.personal.month = book[i + 1].stat.personal.month;
+            book[i].stat.personal.year = book[i + 1].stat.personal.year;
+        }
+        else
+        {
+            strcpy(book[i].stat.working.organisation, book[i + 1].stat.working.organisation);
+            strcpy(book[i].stat.working.position, book[i + 1].stat.working.position);
+        }
+    }
+}
+
+int read_int(char *msg, int mn, int mx)
+{
+    int num = 0;
+    if (mx > -1)
+    {
+        do
+        {
+            printf("%s", msg);
+            if (scanf("%d", &num) != 1)
+            {
+                while (getchar() != '\n')
+                    ;
+                printf("Ooops, try again\n");
+            }
+            else if (num < mn || num > mx)
+            {
+                printf("Try again. inx = [%d, %d]\n", mn, mx);
+            }
+        } while (num < mn || num > mx);
+    }
+    else
+    {
+        do
+        {
+            printf("%s", msg);
+            if (scanf("%d", &num) != 1)
+            {
+                while (getchar() != '\n')
+                    ;
+                printf("Ooops, try again\n");
+            }
+            else
+                break;
+        } while (1);
+    }
+
+    return num;
 }

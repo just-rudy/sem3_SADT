@@ -17,15 +17,14 @@
 #define TUTORIAL        2
 #define ADD             3
 #define DELETE          4
-#define MAKE_KEY        5
 #define SORT_KEY_BBL    6
 #define SORT_KEY_CHS    7
 #define PRINT_TBL     100
 #define PRINT_KEY     500
 
 // consts
-#define MAX_STR_LEN      14
-#define abonent_t_CNT      40
+#define MAX_STR_LEN        14
+#define abonent_t_CNT       2//40
 #define MAX_abonent_t_CNT 100
 
 struct addres_s

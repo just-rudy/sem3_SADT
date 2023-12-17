@@ -8,9 +8,9 @@ void use_key(abonent_t_book book, key_table_arr key_tbl, int n)
     for (int i = 0; i < n; i++)
     {
         key_tbl[i].idx = i;
-        strcpy(book[i].name, key_tbl[i].name);
-        printf("key: %d - %s\n", key_tbl[i].idx, key_tbl[i].name);
-        printf("key: %d - %s\n", i, book[i].name);
+        strcpy(key_tbl[i].name, book[i].name);
+        // printf("key: %d - %s\n", key_tbl[i].idx, key_tbl[i].name);
+        // printf("key: %d - %s\n", i, book[i].name);
     }
 }
 
@@ -24,7 +24,7 @@ void print_key_table(key_table_arr tbl, int n)
     }
 }
 
-// сортирует таблицу ключей  по фамилии
+// сортирует таблицу ключей по имени
 // пузырек
 
 void swap(struct key_s *a, struct key_s *b)
