@@ -2,7 +2,7 @@
 
 int read_int(char *msg, int mn, int mx);
 void shift(abonent_t_book book, int idx, int n);
-void shift_key(key_table_arr tbl, int idx, int n);
+// void shift_key(key_table_arr tbl, int idx, int n);
 void print_one_abonent_t(struct abonent_t person);
 
 int read_string(string str)
@@ -20,6 +20,63 @@ int read_string(string str)
     return status;
 }
 
+int if_leap(int year)
+{
+    if (year % 400 == 0)
+        return 1;
+    if (year % 100 == 0)
+        return 0;
+    if (year % 4 == 0)
+        return 1;
+    return 0;
+}
+
+void check_for_bday(abonent_t_book book, int n)
+{
+    // ввести дату
+    int d, m, cur_y;
+    printf("input current date\n");
+    cur_y = read_int("year: ", 0, -1);
+    m = read_int("month(num): ", 1, 12);
+    int max_day;
+    if (m == 4 || m == 6 || m == 9 || m == 11)
+        max_day = 30;
+    else if (m != 2)
+        max_day = 31;
+    else if (if_leap(cur_y))
+        max_day = 29;
+    else
+        max_day = 28;
+    d = read_int("day: ", 1, max_day);
+
+    for (int i = 0; i < n; i++)
+    {
+        if (book[i].status_t == PERSONAL)
+        {
+            int p_d = book[i].stat.personal.day;
+            int p_m = book[i].stat.personal.month;
+
+            if (p_m == m && p_d - d <= 6)
+                print_one_abonent_t(book[i]);
+            else if (p_m - m == 1 || (m == 12 && p_m == 1))
+            {
+                if (m == 4 || m == 6 || m == 9 || m == 11)
+                    p_d += 30;
+                else if (m == 2)
+                    if (if_leap(cur_y))
+                        p_d += 29;
+                    else
+                        p_d += 28;
+                else
+                    p_d += 31;
+                
+                if (p_d - d <= 6)
+                    print_one_abonent_t(book[i]);
+            }           
+        }
+    }
+}
+
 void print_tutorial()
 {
     printf("Command:\n");
@@ -27,8 +84,14 @@ void print_tutorial()
     printf("2 to read tutorial again\n");
     printf("3 for adding new abonent_t\n");
     printf("4 for deleting abonent_t\n");
-    printf("5 for sorting key by choice\n");
-    printf("6 for sorting key by bubble\n");
+    printf("for sorting key table:\n");
+    printf("\t5 by choice\n");
+    printf("\t6 by bubble\n");
+    printf("for just table:\n");
+    printf("\t7 by choice\n");
+    printf("\t8 by bubble\n");
+    printf("9 for time measure\n");
+    printf("10 for bday check\n");
     printf("100 to print abonenet book\n");
     printf("500 to print key_table\n");
 }
@@ -42,7 +105,7 @@ void print_one_abonent_t(struct abonent_t person)
         printf("%14s - %14s|\n", person.stat.working.organisation, person.stat.working.position);
 }
 
-void print_book(abonent_t_book book, int n) 
+void print_book(abonent_t_book book, int n)
 {
     printf("| N |      name      |     surname      |          adress         |p-0|             status            |\n");
     printf("|   |                |                  |     street     |  home  |w-1|                               |\n");
@@ -62,6 +125,8 @@ void add_line(abonent_t_book book, key_table_arr key_tbl, int n)
     string tmp_str;
     char c;
 
+    // idx
+    book[n].idx = n;
     // name
     printf("input name: ");
     status = read_string(tmp_str);
@@ -164,19 +229,8 @@ void delete_line(abonent_t_book book, key_table_arr tbl, int *n)
     {
         int idx = read_int("input line index: ", 0, (*n) - 1);
         if (idx != (*n))
-        {
             shift(book, idx, (*n));
-            shift_key(tbl, idx, (*n));
-        }
         (*n)--;
-    }
-}
-
-void shift_key(key_table_arr tbl, int idx, int n)
-{
-    for (int i = idx; i < n - 1; i++)
-    {
-        strcpy(tbl[i].name, tbl[i + 1].name);
     }
 }
 

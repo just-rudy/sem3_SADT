@@ -5,8 +5,13 @@
 #include "consts.h"
 
 void print_key_table(struct key_s *table, int n);
-void choice_sort_k(key_table_arr key_table, int n);
 void use_key(abonent_t_book book, key_table_arr key_tbl, int n);
+
+void choice_sort_k(key_table_arr key_table, int n);
 void bubble_sort_k(key_table_arr key_table, int n);
+
+void bubble_sort_db(abonent_t_book book, int n);
+void choice_sort_db(abonent_t_book book, int n);
+
 
 #endif

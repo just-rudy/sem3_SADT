@@ -2,6 +2,7 @@
 #include "input.h"
 #include "commands.h"
 #include "key_and_sort.h"
+#include "time_mem_exp.h"
 
 int error_handler(int status);
 int proccess(abonent_t_book book, key_table_arr key_tbl, int n);
@@ -46,12 +47,25 @@ int proccess(abonent_t_book book, key_table_arr key_tbl, int n)
                 break;
             case DELETE:
                 delete_line(book, key_tbl, &n);
+                use_key(book, key_tbl, n);
                 break;
             case SORT_KEY_BBL:
                 bubble_sort_k(key_tbl, n);
                 break;
             case SORT_KEY_CHS:
                 choice_sort_k(key_tbl, n);
+                break;
+            case SORT_DB_BBL:
+                bubble_sort_db(book, n);
+                break;
+            case SORT_DB_CHS:
+                choice_sort_db(book, n);
+                break;
+            case TIME:
+                time_measure_exp();
+                break;
+            case BDAY:
+                check_for_bday(book, n);
                 break;
             case PRINT_KEY:
                 print_key_table(key_tbl, n);

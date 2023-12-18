@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 // error_codes
 #define SUCCESS         0
@@ -19,13 +20,17 @@
 #define DELETE          4
 #define SORT_KEY_CHS    5
 #define SORT_KEY_BBL    6
+#define SORT_DB_CHS     7
+#define SORT_DB_BBL     8
+#define TIME            9
+#define BDAY           10
 #define PRINT_TBL     100
 #define PRINT_KEY     500
 
 // consts
 #define MAX_STR_LEN        14
 #define abonent_t_CNT       5//40
-#define MAX_abonent_t_CNT 100
+#define MAX_abonent_t_CNT 1000
 
 struct addres_s
 {
