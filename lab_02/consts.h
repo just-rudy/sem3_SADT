@@ -29,7 +29,7 @@
 
 // consts
 #define MAX_STR_LEN        14
-#define abonent_t_CNT       5//40
+#define abonent_t_CNT      40
 #define MAX_abonent_t_CNT 1000
 
 struct addres_s
