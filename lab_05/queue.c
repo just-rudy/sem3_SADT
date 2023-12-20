@@ -202,16 +202,14 @@ void study_time_array(arr_que_t *q_arr)
         add_to_array_queue(q_arr, i);
     gettimeofday(&tv_stop, NULL);
     double array_push_time = (double) (tv_stop.tv_sec - tv_start.tv_sec) * 1000000LL + (tv_stop.tv_usec - tv_start.tv_usec);
-    printf("На запись одного элемента в очередь-массив ушло %ld нс и %ld байт памяти\n", \
-    (long) (array_push_time * 1000) / Q_LEN, sizeof(int));
+    printf("Добавление одного элемента в массив: %ld нс и %ld байт \n", (long) (array_push_time * 1000) / Q_LEN, sizeof(int));
 
     gettimeofday(&tv_start, NULL);
     for (int i = 0; i < Q_LEN; i++)
         q_arr->p_out++;//get_element_from_array_queue(q_arr);
     gettimeofday(&tv_stop, NULL);
     double array_pop_time = (double) (tv_stop.tv_sec - tv_start.tv_sec) * 1000000LL + (tv_stop.tv_usec - tv_start.tv_usec);
-    printf("На чтение одного элемента в очередь-массив ушло %ld нс и %ld байт памяти\n", \
-    (long) (array_pop_time * 1000) / Q_LEN, sizeof(int));
+    printf("Удаление одного элемента в массив: %ld нс и %ld байт\n", (long) (array_pop_time * 1000) / Q_LEN, sizeof(int));
 }
 
 void process_list(q_state_t *state)
@@ -471,16 +469,14 @@ void study_time_list(list_que_t *q_list)
         add_to_list_queue(q_list, i, 0);
     gettimeofday(&tv_stop, NULL);
     double node_push_time = (double) (tv_stop.tv_sec - tv_start.tv_sec) * 1000000LL + (tv_stop.tv_usec - tv_start.tv_usec);
-    printf("to wrinte one node que el: %ld нс и %ld байт памяти\n", \
-    (long) (node_push_time * 1000) / Q_LEN, sizeof(node_t));
+    printf("Добавление одного элемента в список: %ld нс и %ld байт\n", (long) (node_push_time * 1000) / Q_LEN, sizeof(node_t));
 
     gettimeofday(&tv_start, NULL);
     for (int i = 0; i < Q_LEN; i++)
         get_el_from_list_queue(q_list, 0);
     gettimeofday(&tv_stop, NULL);
     double node_pop_time = (double) (tv_stop.tv_sec - tv_start.tv_sec) * 1000000LL + (tv_stop.tv_usec - tv_start.tv_usec);
-    printf("to read one node que el: %ld нс и %ld байт памяти\n", \
-    (long) (node_pop_time * 1000) / Q_LEN, sizeof(node_t));
+    printf("Удаление одного элемента в список: %ld нс и %ld байт\n", (long) (node_pop_time * 1000) / Q_LEN, sizeof(node_t));
 }
 
 void study_avg_time(q_state_t *state)
