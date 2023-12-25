@@ -61,7 +61,7 @@ void print_tutorial()
     printf("2 to start array queue\n");
     printf("3 to start list queue\n");
     printf("4 to compare time\n");
-    // printf("5 to choose time intervals\n");
+    printf("5 to choose time intervals\n");
 }
 
 int read_int(char *msg, int mn, int mx)

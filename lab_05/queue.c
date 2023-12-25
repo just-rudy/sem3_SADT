@@ -5,12 +5,12 @@
 #include <stdlib.h>
 
 int is_long(q_state_t *state);
-void add_to_list_queue(list_que_t *q_list, int el, int with_info);
+void add_to_list_queue(list_que_t *q_list, int el, int with_adress);
 void add_to_array_queue(arr_que_t *q_arr, int element);
-void process_list_element(list_que_t *q_list, int *el, int *exited, int with_info, int *loaded, int *in_queue);
+void process_list_element(list_que_t *q_list, int *el, int *exited, int with_adress, int *loaded, int *in_queue);
 void process_array_element(arr_que_t *q_arr, int *element, int *exited, int *loaded, int *in_queue);
 int get_element_from_array_queue(arr_que_t *q_arr);
-int get_el_from_list_queue(list_que_t *q_list, int with_info);
+int get_el_from_list_queue(list_que_t *q_list, int with_adress);
 double get_processing_time(q_state_t *state);
 double get_random_interval(q_state_t *state);
 void print_result(q_state_t *state, double time, int loaded, int exited, int done, double procor_waited);
@@ -39,15 +39,15 @@ void process_array(q_state_t *state)
     double interval = 0;
     double process_iteration = 0;
     do
-    {   
+    {
         if (is_long(state) && done > Q_LEN * LOOP_CNT - INFO_CNT)
             break;
         interval = get_random_interval(state);
         time += interval;
         sum_for_average_queue_length += elements_in_queue;
         iterator++;
-        
-        if (elements_in_queue < Q_LEN - 1)
+
+        if (elements_in_queue < Q_LEN)
         {
             if (loaded < Q_LEN * LOOP_CNT)
             {
@@ -55,6 +55,13 @@ void process_array(q_state_t *state)
             }
             elements_in_queue++;
             add_to_array_queue(state->q_arr, el);
+        }
+        else
+        {
+            print_result(state, time, loaded, exited, done, procor_waited);
+
+            printf("\nERROR: queue longer than %d\n", Q_LEN);
+            return;
         }
         if (!is_processor_free && interval >= remained_time)
         {
@@ -64,7 +71,7 @@ void process_array(q_state_t *state)
             interval -= remained_time;
             if (done % INFO_CNT == 0 && done < Q_LEN * LOOP_CNT)
             {
-                avg = ((double)sum_for_average_queue_length) / iterator;   
+                avg = ((double)sum_for_average_queue_length) / iterator;
                 printf("\n");
                 printf("done at the time: %d\n", done);
                 printf("cur queue len: %d\n", elements_in_queue);
@@ -114,8 +121,7 @@ void process_array(q_state_t *state)
                 }
             }
         }
-    }
-    while (loaded < Q_LEN * LOOP_CNT || done < Q_LEN * LOOP_CNT || exited < Q_LEN);
+    } while (loaded < Q_LEN * LOOP_CNT || done < Q_LEN * LOOP_CNT || exited < Q_LEN);
     for (int *p = state->q_arr->p_start; p < state->q_arr->p_end; p++)
         *p = 0;
     state->q_arr->p_in = state->q_arr->p_start;
@@ -125,9 +131,9 @@ void process_array(q_state_t *state)
 
 void add_to_array_queue(arr_que_t *q_arr, int element)
 {
-    if (q_arr == NULL || q_arr->p_in == NULL || \
-    q_arr->p_start == NULL || q_arr->p_start >= q_arr->p_end || \
-    q_arr->p_out == NULL || q_arr->p_end == NULL)
+    if (q_arr == NULL || q_arr->p_in == NULL ||
+        q_arr->p_start == NULL || q_arr->p_start >= q_arr->p_end ||
+        q_arr->p_out == NULL || q_arr->p_end == NULL)
         return;
     if (q_arr->p_in >= q_arr->p_end)
     {
@@ -142,16 +148,16 @@ void add_to_array_queue(arr_que_t *q_arr, int element)
     }
     else
     {
-        //printf("Очередь заполнена!\n");
+        // printf("Очередь заполнена!\n");
     }
 }
 
 void process_array_element(arr_que_t *q_arr, int *element, int *exited, int *loaded, int *in_queue)
 {
-    if (q_arr == NULL || q_arr->p_in == NULL || \
-    q_arr->p_out == NULL || q_arr->p_end == NULL || \
-    q_arr->p_start == NULL || q_arr->p_start >= q_arr->p_end || \
-    element == NULL || exited == NULL)
+    if (q_arr == NULL || q_arr->p_in == NULL ||
+        q_arr->p_out == NULL || q_arr->p_end == NULL ||
+        q_arr->p_start == NULL || q_arr->p_start >= q_arr->p_end ||
+        element == NULL || exited == NULL)
         return;
     int processing_element = get_element_from_array_queue(q_arr);
     if (processing_element < 0)
@@ -162,7 +168,6 @@ void process_array_element(arr_que_t *q_arr, int *element, int *exited, int *loa
         if (*exited < Q_LEN)
             *exited += 1;
         *element = 0;
-
     }
     else
     {
@@ -179,12 +184,9 @@ void process_array_element(arr_que_t *q_arr, int *element, int *exited, int *loa
 
 int get_element_from_array_queue(arr_que_t *q_arr)
 {
-    if (q_arr == NULL || q_arr->p_in == NULL || \
-    q_arr->p_start == NULL || q_arr->p_start >= q_arr->p_end || \
-    q_arr->p_out == NULL || q_arr->p_end == NULL || \
-    q_arr->p_out == q_arr->p_in)
+    if (q_arr == NULL || q_arr->p_in == NULL || q_arr->p_start == NULL || q_arr->p_start >= q_arr->p_end || q_arr->p_out == NULL || q_arr->p_end == NULL || q_arr->p_out == q_arr->p_in)
         return -1;
-    
+
     int element = *(q_arr->p_out);
     q_arr->p_out += 1;
     if (q_arr->p_out >= q_arr->p_end)
@@ -201,15 +203,15 @@ void study_time_array(arr_que_t *q_arr)
     for (int i = 0; i < Q_LEN; i++)
         add_to_array_queue(q_arr, i);
     gettimeofday(&tv_stop, NULL);
-    double array_push_time = (double) (tv_stop.tv_sec - tv_start.tv_sec) * 1000000LL + (tv_stop.tv_usec - tv_start.tv_usec);
-    printf("Добавление одного элемента в массив: %ld нс и %ld байт \n", (long) (array_push_time * 1000) / Q_LEN, sizeof(int));
+    double array_push_time = (double)(tv_stop.tv_sec - tv_start.tv_sec) * 1000000LL + (tv_stop.tv_usec - tv_start.tv_usec);
+    printf("Добавление одного элемента в массив: %ld нс и %ld байт \n", (long)(array_push_time * 1000) / Q_LEN, sizeof(int));
 
     gettimeofday(&tv_start, NULL);
     for (int i = 0; i < Q_LEN; i++)
-        q_arr->p_out++;//get_element_from_array_queue(q_arr);
+        q_arr->p_out++; // get_element_from_array_queue(q_arr);
     gettimeofday(&tv_stop, NULL);
-    double array_pop_time = (double) (tv_stop.tv_sec - tv_start.tv_sec) * 1000000LL + (tv_stop.tv_usec - tv_start.tv_usec);
-    printf("Удаление одного элемента в массив: %ld нс и %ld байт\n", (long) (array_pop_time * 1000) / Q_LEN, sizeof(int));
+    double array_pop_time = (double)(tv_stop.tv_sec - tv_start.tv_sec) * 1000000LL + (tv_stop.tv_usec - tv_start.tv_usec);
+    printf("Удаление одного элемента в массив: %ld нс и %ld байт\n", (long)(array_pop_time * 1000) / Q_LEN, sizeof(int));
 }
 
 void process_list(q_state_t *state)
@@ -234,10 +236,10 @@ void process_list(q_state_t *state)
     double interval = 0;
     double process_iteration = 0;
     double avg;
-    int with_info = 1;
+    int with_adress = 0;
 
     do
-    { 
+    {
         if (is_long(state) && done >= Q_LEN * LOOP_CNT - INFO_CNT)
             break;
 
@@ -251,7 +253,7 @@ void process_list(q_state_t *state)
             if (loaded < Q_LEN * LOOP_CNT)
                 loaded++;
 
-            add_to_list_queue(state->q_list, el, (with_info && done > Q_LEN * LOOP_CNT - INFO_CNT - PRINT_CNT));
+            add_to_list_queue(state->q_list, el, (with_adress && done > Q_LEN * LOOP_CNT - INFO_CNT - PRINT_CNT));
             que_els++;
         }
         if (!is_processor_free && interval >= remained_time)
@@ -281,8 +283,7 @@ void process_list(q_state_t *state)
             if (is_long(state) && done >= Q_LEN * LOOP_CNT - INFO_CNT)
                 break;
             working_time = get_processing_time(state);
-            process_list_element(state->q_list, &el, &exited, \
-            (with_info && done > Q_LEN * LOOP_CNT - PRINT_CNT), &loaded, &que_els);
+            process_list_element(state->q_list, &el, &exited, (with_adress && done > Q_LEN * LOOP_CNT - PRINT_CNT), &loaded, &que_els);
             process_iteration += working_time;
             procor_worked += working_time;
             if (done < Q_LEN * LOOP_CNT)
@@ -312,8 +313,7 @@ void process_list(q_state_t *state)
                 }
             }
         }
-    }
-    while (loaded < Q_LEN * LOOP_CNT || done < Q_LEN * LOOP_CNT || exited < Q_LEN);
+    } while (loaded < Q_LEN * LOOP_CNT || done < Q_LEN * LOOP_CNT || exited < Q_LEN);
     free_list_queue(state->q_list);
     print_cur(state, time, avg, loaded, exited, done, procor_waited);
 }
@@ -333,22 +333,25 @@ void free_list_queue(list_que_t *q_list)
 
 double get_random_interval(q_state_t *state)
 {
-    double interval = ((double) rand() / RAND_MAX) * (state->int_max - state->int_min) + state->int_min;
-    return interval;
+    srand(time(NULL));
+    double random = (double)rand() / RAND_MAX;
+    double result = state->int_min + random * (state->int_max - state->int_min);
+
+    return result;
 }
 
 double get_processing_time(q_state_t *state)
 {
-    double processing_time = ((double) rand() / RAND_MAX) * (state->process_max - state->process_min) + state->process_min;
+    double processing_time = ((double)rand() / RAND_MAX) * (state->process_max - state->process_min) + state->process_min;
     return processing_time;
 }
 
-void process_list_element(list_que_t *q_list, int *el, int *exited, int with_info, int *loaded, int *in_queue)
+void process_list_element(list_que_t *q_list, int *el, int *exited, int with_adress, int *loaded, int *in_queue)
 {
     if (q_list == NULL || q_list->p_in == NULL || q_list->p_out == NULL || el == NULL || exited == NULL)
         return;
 
-    int process_el = get_el_from_list_queue(q_list, with_info);
+    int process_el = get_el_from_list_queue(q_list, with_adress);
 
     if (process_el < 0)
         return;
@@ -366,25 +369,25 @@ void process_list_element(list_que_t *q_list, int *el, int *exited, int with_inf
         {
             *loaded += 1;
             *in_queue += 1;
-            add_to_list_queue(q_list, process_el, with_info);
+            add_to_list_queue(q_list, process_el, with_adress);
         }
         else
             *el = process_el;
     }
 }
 
-int get_el_from_list_queue(list_que_t *q_list, int with_info)
+int get_el_from_list_queue(list_que_t *q_list, int with_adress)
 {
-    if (q_list == NULL || q_list->p_in == NULL || \
-    q_list->p_out == NULL)
+    if (q_list == NULL || q_list->p_in == NULL ||
+        q_list->p_out == NULL)
         return -1;
     node_t *t = q_list->p_in;
     int element = 0;
     if (q_list->p_in == q_list->p_out)
     {
         element = q_list->p_out->data;
-        if (with_info)
-            printf("DELETED: %ld\n", (long int) q_list->p_out);
+        if (with_adress)
+            printf("DELETED: %ld\n", (long int)q_list->p_out);
         free(q_list->p_out);
         q_list->p_out = NULL;
         q_list->p_in = NULL;
@@ -397,15 +400,15 @@ int get_el_from_list_queue(list_que_t *q_list, int with_info)
         }
         t->next = NULL;
         element = q_list->p_out->data;
-        if (with_info)
-            printf("DELETED: %ld\n", (long int) q_list->p_out);
+        if (with_adress)
+            printf("DELETED: %ld\n", (long int)q_list->p_out);
         free(q_list->p_out);
         q_list->p_out = t;
     }
     return element;
 }
 
-void add_to_list_queue(list_que_t *q_list, int el, int with_info)
+void add_to_list_queue(list_que_t *q_list, int el, int with_adress)
 {
     if (q_list == NULL)
         return;
@@ -413,8 +416,8 @@ void add_to_list_queue(list_que_t *q_list, int el, int with_info)
     new_node = calloc(1, sizeof(node_t));
     if (new_node)
     {
-        if (with_info)
-            printf("ADDED  : %ld\n", (long int) new_node);
+        if (with_adress)
+            printf("ADDED  : %ld\n", (long int)new_node);
         new_node->data = el;
         q_list->p_in = new_node;
         if (q_list->p_in == NULL || q_list->p_out == NULL)
@@ -436,18 +439,18 @@ int is_long(q_state_t *state)
 
 void print_result(q_state_t *state, double time, int loaded, int exited, int done, double procor_waited)
 {
-    if (is_long(state))
+    if (is_long(state)) 
         time = (((double)(state->process_max - state->process_min) / 2 * Q_LEN * LOOP_CNT) - get_processing_time(state));
-    loaded = Q_LEN * LOOP_CNT;
-    exited = Q_LEN;
-    done = loaded;
+    // loaded = Q_LEN * LOOP_CNT;
+    // exited = Q_LEN;
+    // done = loaded;
     procor_waited /= Q_LEN;
     procor_waited *= LOOP_CNT;
-    printf("time proccessing: %lf\n", time);
+    printf("\ntime proccessing: %lf\n", time);
     printf("cnt in: %d\n", loaded);
     printf("cnt out: %d\n", exited);
     printf("cnt OA works: %d\n", done);
-    printf("proc waires: %lf ед. вр.\n", procor_waited);
+    printf("proc waited: %lf ед. вр.\n", procor_waited);
 }
 
 void print_cur(q_state_t *state, double time, double avg, int loaded, int exited, int done, double procor_waited)
@@ -468,15 +471,15 @@ void study_time_list(list_que_t *q_list)
     for (int i = 0; i < Q_LEN; i++)
         add_to_list_queue(q_list, i, 0);
     gettimeofday(&tv_stop, NULL);
-    double node_push_time = (double) (tv_stop.tv_sec - tv_start.tv_sec) * 1000000LL + (tv_stop.tv_usec - tv_start.tv_usec);
-    printf("Добавление одного элемента в список: %ld нс и %ld байт\n", (long) (node_push_time * 1000) / Q_LEN, sizeof(node_t));
+    double node_push_time = (double)(tv_stop.tv_sec - tv_start.tv_sec) * 1000000LL + (tv_stop.tv_usec - tv_start.tv_usec);
+    printf("Добавление одного элемента в список: %ld нс и %ld байт\n", (long)(node_push_time * 1000) / Q_LEN, sizeof(node_t));
 
     gettimeofday(&tv_start, NULL);
     for (int i = 0; i < Q_LEN; i++)
         get_el_from_list_queue(q_list, 0);
     gettimeofday(&tv_stop, NULL);
-    double node_pop_time = (double) (tv_stop.tv_sec - tv_start.tv_sec) * 1000000LL + (tv_stop.tv_usec - tv_start.tv_usec);
-    printf("Удаление одного элемента в список: %ld нс и %ld байт\n", (long) (node_pop_time * 1000) / Q_LEN, sizeof(node_t));
+    double node_pop_time = (double)(tv_stop.tv_sec - tv_start.tv_sec) * 1000000LL + (tv_stop.tv_usec - tv_start.tv_usec);
+    printf("Удаление одного элемента в список: %ld нс и %ld байт\n", (long)(node_pop_time * 1000) / Q_LEN, sizeof(node_t));
 }
 
 void study_avg_time(q_state_t *state)
@@ -504,7 +507,7 @@ void study_avg_time(q_state_t *state)
     double true_coming = ((double)(state->int_max + state->int_min)) / 2;
     true_coming *= Q_LEN;
     double percentage = 100 * (true_coming - coming) / true_coming;
-    if (percentage < 0 )
+    if (percentage < 0)
         percentage *= (-1);
     printf("Погрешность для времени моделирования по входу: %lf %%\n", percentage);
     printf("Среднее время моделирования по выходу: %lf ед. вр.\n", process_sum / Q_LEN);
@@ -512,7 +515,7 @@ void study_avg_time(q_state_t *state)
     true_proc *= Q_LEN;
     true_proc *= LOOP_CNT;
     percentage = 100 * (true_proc - process_sum / Q_LEN) / true_proc;
-    if (percentage < 0 )
+    if (percentage < 0)
         percentage *= (-1);
     if (waiting < 0)
         waiting *= (-1);
